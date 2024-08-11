@@ -14,8 +14,8 @@
       padding: 0;
       height: 100%;
       font-family: 'Roboto Flex', sans-serif;
-      background-color: #e0e0e0; /* Body background color */
-      color: #333; /* Text color */
+      background-color: #121212; /* Dark mode background */
+      color: #e0e0e0; /* Text color */
     }
     .container {
       margin-top: 15px; /* Adjusted for navbar */
@@ -23,48 +23,49 @@
     }
     h2, h6 {
       font-family: 'Bona Nova SC', serif;
-      color: #343a40; /* Heading color */
     }
     .form-control {
-      background-color: #fff; /* Input field background color */
-      color: #333; /* Input text color */
-      border: 1px solid #ced4da; /* Border color */
+      background-color: #333;
+      color: #e0e0e0;
+      border: none;
     }
     .form-control:focus {
-      background-color: #fff; /* Focused input field background color */
-      color: #333; /* Focused input text color */
-      border-color: #80bdff; /* Focused border color */
-      box-shadow: none; /* No box shadow on focus */
+      background-color: #444;
+      color: #e0e0e0;
+      border-color: #555;
+      box-shadow: none;
     }
     .btn-primary {
-      background-color: #007bff; /* Primary button color */
-      border-color: #0069d9; /* Primary button border color */
-      color: #fff; /* Button text color */
+      background-color: #1f1f1f;
+      border-color: #333;
     }
     .btn-primary:hover {
-      background-color: #0056b3; /* Darker button color on hover */
-      border-color: #004085; /* Darker button border on hover */
+      background-color: #333;
+      border-color: #444;
     }
     .formula {
       font-size: 0.8rem;
       font-style: italic;
-      color: #6c757d; /* Italic text color */
+      color: #bbb;
       margin-top: 20px;
     }
-    .navbar-light .navbar-nav .nav-link {
-      color: #333; /* Navbar text color */
+    .navbar {
+      background-color: #ececec; /* Navbar color */
     }
-    .navbar-light .navbar-toggler {
-      color: #333; /* Toggler icon color */
-      border-color: #333; /* Toggler border color */
+    .navbar-dark .navbar-nav .nav-link {
+      color: #000; /* Navbar text color */
+    }
+    .navbar-dark .navbar-toggler {
+      color: #000; /* Navbar toggler icon color */
+      border-color: #000; /* Navbar toggler border color */
     }
     .first-color {
-      background: #ececec; /* Navbar background color */
+      background: #f5f410;
     }
     /* Footer Styles */
     footer {
-      background-color: #495057; /* Footer background color */
-      color: #f8f9fa; /* Footer text color */
+      background-color: #495057;
+      color: #f8f9fa;
       padding: 10px 0;
       position: fixed;
       bottom: 0;
@@ -99,8 +100,8 @@
 </head>
 <body>
   <!-- Navbar -->
-  <nav id="navbar" class="navbar navbar-expand-lg navbar-light first-color">
-    <a class="navbar-brand" href="#"><strong>Grashiex Services</strong></a>
+  <nav id="navbar" class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#" style="color:black;"><strong>Grashiex Services</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -193,28 +194,28 @@
       var tier1Rate = parseFloat(document.getElementById('tier1Rate').value) / 100 || 0;
       var tier2Rate = parseFloat(document.getElementById('tier2Rate').value) / 100 || 0;
 
-      if (isNaN(totalSales) || isNaN(commissionRate)) {
-        document.getElementById('commissionResult').innerText = 'Please enter valid sales and commission rate.';
-        return;
-      }
+      if (totalSales) {
+        var baseCommission = totalSales * commissionRate;
+        var tieredCommission = 0;
 
-      var commission = totalSales * commissionRate;
-
-      if (document.getElementById('enableTieredCommission').checked) {
-        if (totalSales > tier1Threshold) {
-          var tier1Commission = tier1Threshold * commissionRate;
-          var tier2Commission = (totalSales - tier1Threshold) * tier2Rate;
-          commission = tier1Commission + tier2Commission;
-        } else {
-          commission = totalSales * tier1Rate;
+        if (tier1Threshold > 0) {
+          if (totalSales <= tier1Threshold) {
+            tieredCommission = totalSales * tier1Rate;
+          } else {
+            tieredCommission = (tier1Threshold * tier1Rate) + ((totalSales - tier1Threshold) * tier2Rate);
+          }
         }
-      }
 
-      document.getElementById('commissionResult').innerText = 'Total Commission: ' + commission.toFixed(2);
+        var totalCommission = baseCommission + tieredCommission;
+
+        document.getElementById('commissionResult').innerText = 'Total Commission: ₱' + totalCommission.toFixed(2);
+      } else {
+        document.getElementById('commissionResult').innerText = 'Please enter total sales amount.';
+      }
     }
 
     function switchToResellerWage() {
-      window.location.href = 'index.html';
+      window.location.href = 'reseller_calculator.html'; // URL of the other calculator
     }
   </script>
 </body>
