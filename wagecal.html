@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elorahub - Admin Commission Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bona+Nova+SC:ital,wght@0,400;0,700;1,400&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+  <link id="bootstrap-css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Roboto Flex', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+    .container {
+      margin-top: 15px; /* Adjusted for navbar */
+      padding-bottom: 10px; /* Added padding to ensure the whole form is visible */
+    }
+    h2, h6 {
+      font-family: 'Bona Nova SC', serif;
+    }
+    .form-control {
+      background-color: #333;
+      color: #fff;
+      border: none;
+    }
+    .form-control:focus {
+      background-color: #444;
+      color: #fff;
+      border-color: #555;
+      box-shadow: none;
+    }
+    .btn-primary {
+      background-color: #1f1f1f;
+      border-color: #333;
+    }
+    .btn-primary:hover {
+      background-color: #333;
+      border-color: #444;
+    }
+    .formula {
+      font-size: 0.8rem;
+      font-style: italic;
+      color: #bbb;
+      margin-top: 20px;
+    }
+    .navbar-dark .navbar-nav .nav-link {
+      color: black; /* Make navbar text black */
+    }
+    .navbar-dark .navbar-toggler {
+      color: black; /* Make navbar toggler icon black */
+      border-color: black; /* Make navbar toggler border black */
+    }
+    .first-color {
+      background: #f5f410;
+    }
+    /* Footer Styles */
+    footer {
+      background-color: #495057;
+      color: #f8f9fa;
+      padding: 10px 0;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+    .tier-toggle {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      font-size: 1rem; /* Adjust font size if needed */
+    }
+    .tier-toggle input {
+      margin-right: 10px;
+      /* Adjust the margin or padding if needed */
+    }
+    .tier-toggle label {
+      margin-bottom: 0; /* Remove default margin-bottom for better alignment */
+    }
+    .tier1, .tier2 {
+      display: none; /* Hidden by default */
+    }
+    .btn-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .btn-container .btn {
+      flex: 1; /* Allow buttons to grow and fill the container */
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav id="navbar" class="navbar navbar-expand-lg navbar-dark first-color">
+    <a class="navbar-brand" href="#" style="color:black;"><strong>Elorahub</strong></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Refund Calculator</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Commission Calculator</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Container for the form -->
+  <div class="container">
+    <h4 class="text-center">Admin Commission Calculator</h4>
+    <h6 class="text-center"><small><em>Calculate Admin wages based on sales</em></small></h6>
+    <form id="commissionForm">
+      <div class="form-group">
+        <label for="totalSales">Total Sales</label>
+        <input type="number" class="form-control" id="totalSales" placeholder="Enter total sales amount">
+      </div>
+      <div class="form-group">
+        <label for="commissionRate">Commission Rate (%)</label>
+        <input type="number" class="form-control" id="commissionRate" placeholder="Enter commission rate percentage">
+      </div>
+      <div class="tier-toggle">
+        <input type="checkbox" id="enableTieredCommission">
+        <label for="enableTieredCommission">Enable Tiered Commission</label>
+      </div>
+      <div class="form-group tier1">
+        <label for="tier1Threshold">Tier 1 Threshold</label>
+        <input type="number" class="form-control" id="tier1Threshold" placeholder="Enter Tier 1 threshold amount">
+      </div>
+      <div class="form-group tier1">
+        <label for="tier1Rate">Tier 1 Commission Rate (%)</label>
+        <input type="number" class="form-control" id="tier1Rate" placeholder="Enter Tier 1 commission rate percentage">
+      </div>
+      <div class="form-group tier2">
+        <label for="tier2Rate">Tier 2 Commission Rate (%)</label>
+        <input type="number" class="form-control" id="tier2Rate" placeholder="Enter Tier 2 commission rate percentage">
+      </div>
+      <div class="btn-container">
+        <button type="button" class="btn btn-primary" onclick="calculateCommission()">Calculate Commission</button>
+        <button type="button" class="btn btn-primary" onclick="switchToResellerWage()">Refund Calculator</button>
+      </div>
+    </form>
+    <div class="mt-4">
+      <h5 id="commissionResult" class="text-center"></h5>
+    </div>
+    <div class="formula text-center">
+      <p><small><em>Commission = (Base Commission) + (Sales above Tier 1 Threshold * Tier 2 Rate)</em></small></p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2024 Elorahub. All rights reserved.
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Hide tiered commission fields by default
+      var isChecked = document.getElementById('enableTieredCommission').checked;
+      document.querySelectorAll('.tier1, .tier2').forEach(function(el) {
+        el.style.display = isChecked ? 'block' : 'none';
+      });
+    });
+
+    document.getElementById('enableTieredCommission').addEventListener('change', function() {
+      var isChecked = this.checked;
+      document.querySelectorAll('.tier1, .tier2').forEach(function(el) {
+        el.style.display = isChecked ? 'block' : 'none';
+      });
+
+      // Clear values if unchecked
+      if (!isChecked) {
+        document.getElementById('tier1Threshold').value = '';
+        document.getElementById('tier1Rate').value = '';
+        document.getElementById('tier2Rate').value = '';
+      }
+    });
+
+    function calculateCommission() {
+      var totalSales = parseFloat(document.getElementById('totalSales').value);
+      var commissionRate = parseFloat(document.getElementById('commissionRate').value) / 100;
+      var tier1Threshold = parseFloat(document.getElementById('tier1Threshold').value) || 0;
+      var tier1Rate = parseFloat(document.getElementById('tier1Rate').value) / 100 || 0;
+      var tier2Rate = parseFloat(document.getElementById('tier2Rate').value) / 100 || 0;
+
+      if (totalSales) {
+        var baseCommission = totalSales * commissionRate;
+        var tieredCommission = 0;
+
+        if (tier1Threshold > 0) {
+          if (totalSales <= tier1Threshold) {
+            tieredCommission = totalSales * tier1Rate;
+          } else {
+            tieredCommission = (tier1Threshold * tier1Rate) + ((totalSales - tier1Threshold) * tier2Rate);
+          }
+        }
+
+        var totalCommission = baseCommission + tieredCommission;
+
+        document.getElementById('commissionResult').innerText = 'Total Commission: ₱' + totalCommission.toFixed(2);
+      } else {
+        document.getElementById('commissionResult').innerText = 'Please enter total sales amount.';
+      }
+    }
+
+    function switchToResellerWage() {
+      window.location.href = 'index.html'; // Replace with your reseller wage calculator page
+    }
+  </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
