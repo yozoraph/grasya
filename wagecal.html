@@ -14,8 +14,8 @@
       padding: 0;
       height: 100%;
       font-family: 'Roboto Flex', sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
+      background-color: #1e1e1e; /* Dark background color */
+      color: #e0e0e0; /* Light text color */
     }
     .container {
       margin-top: 15px; /* Adjusted for navbar */
@@ -23,46 +23,48 @@
     }
     h2, h6 {
       font-family: 'Bona Nova SC', serif;
+      color: #f8f9fa; /* Light heading color */
     }
     .form-control {
-      background-color: #333;
-      color: #fff;
-      border: none;
+      background-color: #333; /* Dark input field background */
+      color: #e0e0e0; /* Light text color */
+      border: 1px solid #444; /* Slightly lighter border */
     }
     .form-control:focus {
-      background-color: #444;
-      color: #fff;
-      border-color: #555;
-      box-shadow: none;
+      background-color: #444; /* Slightly lighter focus background */
+      color: #ffffff; /* Light text color */
+      border-color: #555; /* Light border color */
+      box-shadow: none; /* No box shadow on focus */
     }
     .btn-primary {
-      background-color: #1f1f1f;
-      border-color: #333;
+      background-color: #007bff; /* Primary button color */
+      border-color: #0069d9; /* Primary button border color */
+      color: #fff; /* Light button text color */
     }
     .btn-primary:hover {
-      background-color: #333;
-      border-color: #444;
+      background-color: #0056b3; /* Darker button color on hover */
+      border-color: #004085; /* Darker button border on hover */
     }
     .formula {
       font-size: 0.8rem;
       font-style: italic;
-      color: #bbb;
+      color: #bbb; /* Light italic text color */
       margin-top: 20px;
     }
     .navbar-dark .navbar-nav .nav-link {
-      color: black; /* Make navbar text black */
+      color: #f8f9fa; /* Light navbar text color */
     }
     .navbar-dark .navbar-toggler {
-      color: black; /* Make navbar toggler icon black */
-      border-color: black; /* Make navbar toggler border black */
+      color: #f8f9fa; /* Light toggler icon color */
+      border-color: #f8f9fa; /* Light toggler border color */
     }
     .first-color {
-      background: #f5f410;
+      background: #343a40; /* Dark navbar background color */
     }
     /* Footer Styles */
     footer {
-      background-color: #495057;
-      color: #f8f9fa;
+      background-color: #343a40; /* Dark footer background color */
+      color: #f8f9fa; /* Light footer text color */
       padding: 10px 0;
       position: fixed;
       bottom: 0;
@@ -98,7 +100,7 @@
 <body>
   <!-- Navbar -->
   <nav id="navbar" class="navbar navbar-expand-lg navbar-dark first-color">
-    <a class="navbar-brand" href="#" style="color:black;"><strong>Grashiex Services</strong></a>
+    <a class="navbar-brand" href="#"><strong>Grashiex Services</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -191,24 +193,24 @@
       var tier1Rate = parseFloat(document.getElementById('tier1Rate').value) / 100 || 0;
       var tier2Rate = parseFloat(document.getElementById('tier2Rate').value) / 100 || 0;
 
-      if (totalSales) {
-        var baseCommission = totalSales * commissionRate;
-        var tieredCommission = 0;
-
-        if (tier1Threshold > 0) {
-          if (totalSales <= tier1Threshold) {
-            tieredCommission = totalSales * tier1Rate;
-          } else {
-            tieredCommission = (tier1Threshold * tier1Rate) + ((totalSales - tier1Threshold) * tier2Rate);
-          }
-        }
-
-        var totalCommission = baseCommission + tieredCommission;
-
-        document.getElementById('commissionResult').innerText = 'Total Commission: ₱' + totalCommission.toFixed(2);
-      } else {
-        document.getElementById('commissionResult').innerText = 'Please enter total sales amount.';
+      if (isNaN(totalSales) || isNaN(commissionRate)) {
+        document.getElementById('commissionResult').innerText = 'Please enter valid sales and commission rate.';
+        return;
       }
+
+      var commission = totalSales * commissionRate;
+
+      if (document.getElementById('enableTieredCommission').checked) {
+        if (totalSales > tier1Threshold) {
+          var tier1Commission = tier1Threshold * commissionRate;
+          var tier2Commission = (totalSales - tier1Threshold) * tier2Rate;
+          commission = tier1Commission + tier2Commission;
+        } else {
+          commission = totalSales * tier1Rate;
+        }
+      }
+
+      document.getElementById('commissionResult').innerText = 'Total Commission: ' + commission.toFixed(2);
     }
 
     function switchToResellerWage() {
