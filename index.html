@@ -1,29 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Elorahub - Mail</title>
-  <!-- Link to Google Fonts for a fancy font -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elorahub - Telegram Standard Refund Calculator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bona+Nova+SC:ital,wght@0,400;0,700;1,400&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
   <link id="bootstrap-css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body, html {
       margin: 0;
       padding: 0;
       height: 100%;
-      overflow: hidden;
-      font-family: 'Permanent Marker', cursive; /* Apply the fancy font */
-      font-weight: 400;
-      font-style: normal;
+      font-family: 'Roboto Flex', sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
     }
-
-    iframe {
+    .container {
+      margin-top: 15px; /* Adjusted for navbar */
+      padding-bottom: 10px; /* Added padding to ensure the whole form is visible */
+    }
+    h4, h6 {
+      font-family: 'Bona Nova SC', serif;
+    }
+    .form-control {
+      background-color: #333;
+      color: #fff;
       border: none;
-      height: 100%;
-      width: 100%;
+    }
+    .form-control:focus {
+      background-color: #444;
+      color: #fff;
+      border-color: #555;
+      box-shadow: none;
+    }
+    .btn-primary {
+      background-color: #1f1f1f;
+      border-color: #333;
+      width: 100%; /* Full width for responsiveness */
+    }
+    .btn-primary:hover {
+      background-color: #333;
+      border-color: #444;
+    }
+    .formula {
+      font-size: 0.8rem;
+      font-style: italic;
+      color: #bbb;
+      margin-top: 20px;
     }
     .navbar-dark .navbar-nav .nav-link {
       color: black; /* Make navbar text black */
@@ -32,41 +57,44 @@
       color: black; /* Make navbar toggler icon black */
       border-color: black; /* Make navbar toggler border black */
     }
-    .spinner-container {
+    .first-color {
+      background: #f5f410;
+    }
+    /* Footer Styles */
+    footer {
+      background-color: #495057;
+      color: #f8f9fa;
+      padding: 10px 0;
       position: fixed;
-      top: 0;
-      left: 0;
+      bottom: 0;
       width: 100%;
-      height: 100%;
+      text-align: center;
+    }
+    .form-group select {
+      background-color: #333;
+      color: #fff;
+      border: none;
+    }
+    .form-group select:focus {
+      background-color: #444;
+      color: #fff;
+      border-color: #555;
+      box-shadow: none;
+    }
+    .btn-container {
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.8);
-      z-index: 9999;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .spinner-border {
-      width: 3rem;
-      height: 3rem;
-    }
-    /* Color Classes */
-    .first-color { 
-      background: #ececec; 
-    }
-    .second-color { 
-      background: #9fd3c7; 
-    }
-    .third-color { 
-      background: #385170; 
-    }
-    .fourth-color { 
-      background: #142d4c; 
+    .btn-container .btn {
+      flex: 1; /* Allow buttons to grow and fill the container */
     }
   </style>
 </head>
 <body>
   <!-- Navbar -->
   <nav id="navbar" class="navbar navbar-expand-lg navbar-dark first-color">
-    <a class="navbar-brand" href="#" style="color:black;">Elorahub</a>
+    <a class="navbar-brand" href="#" style="color:black;"><strong>Elorahub</strong></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -76,70 +104,81 @@
           <a class="nav-link" href="#">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="https://t.me/exiodi">Buy</a>
+          <a class="nav-link" href="https://t.me/exiodi">About</a>
         </li>
       </ul>
     </div>
   </nav>
 
-  <!-- Loading Spinner -->
-  <div id="spinnerContainer" class="spinner-container">
-    <div class="spinner-border text-primary" role="status">
-      <span class="sr-only">Loading...</span>
+  <!-- Container for the form -->
+  <div class="container">
+    <h4 class="text-center">Telegram Standard Refund Calculator</h4>
+    <h6 class="text-center"><small><em>Subscription refund calculator</em></small></h6>
+    <form id="refundForm">
+      <div class="form-group">
+        <label for="price">Subscription Price</label>
+        <input type="number" class="form-control" id="price" placeholder="Enter subscription price">
+      </div>
+      <div class="form-group">
+        <label for="totalDays">Total Subscription Days</label>
+        <input type="number" class="form-control" id="totalDays" placeholder="Enter total subscription days">
+      </div>
+      <div class="form-group">
+        <label for="remainingDays">Remaining Days</label>
+        <input type="number" class="form-control" id="remainingDays" placeholder="Enter remaining days">
+      </div>
+      <div class="form-group">
+        <label for="serviceFee">Service Fee</label>
+        <select class="form-control" id="serviceFee">
+          <option value="1">No service fee</option>
+          <option value="0.6">0.6</option>
+          <option value="0.7">0.7</option>
+          <option value="0.8">0.8</option>
+        </select>
+      </div>
+      <div class="btn-container">
+        <button type="button" class="btn btn-primary" onclick="calculateRefund()">Calculate Refund</button>
+        <button type="button" class="btn btn-primary" onclick="switchToResellerWage()">Commission Calculator</button>
+      </div>
+    </form>
+    <div class="mt-4">
+      <h5 id="result" class="text-center"></h5>
+      <h5 id="dailyRate" class="text-center"></h5>
+    </div>
+    <div class="formula text-center">
+      <p><small><em>Refund Amount = (Price ÷ Total Days) × Remaining Days × Service Fee</em></small></p>
     </div>
   </div>
 
-  <iframe id="myIframe" onload="hideSpinner()"></iframe>
+  <!-- Footer -->
+  <footer>
+    &copy; 2024 Elorahub. All rights reserved.
+  </footer>
 
   <script>
-    // Function to hide the spinner
-    function hideSpinner() {
-      document.getElementById('spinnerContainer').style.display = 'none';
-    }
+    function calculateRefund() {
+      var price = parseFloat(document.getElementById('price').value);
+      var totalDays = parseFloat(document.getElementById('totalDays').value);
+      var remainingDays = parseFloat(document.getElementById('remainingDays').value);
+      var serviceFee = parseFloat(document.getElementById('serviceFee').value);
 
-    // Function to get URL parameters
-    function getParameterByName(name, url) {
-      if (!url) url = window.location.href;
-      name = name.replace(/[\[\]]/g, "\\$&");
-      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-          results = regex.exec(url);
-      if (!results) return null;
-      if (!results[2]) return '';
-      return decodeURIComponent(results[2].replace(/\+/g, " "));
-    }
-
-    // Function to decode Base64
-    function base64Decode(str) {
-      return atob(str);
-    }
-
-    // Get the email parameter from the URL and decode it
-    var encodedEmail = getParameterByName('m');
-    var email = encodedEmail ? base64Decode(encodedEmail) : 'your@email.com';
-
-    // Function to set color scheme based on conditions (example)
-    function setColorScheme() {
-      // Example condition: set color based on some parameter or logic
-      var condition = true; // Replace with your condition
-
-      if (condition) {
-        document.getElementById('navbar').classList.remove('first-color', 'second-color', 'third-color', 'fourth-color');
-        document.getElementById('navbar').classList.add('fourth-color'); // Change class based on condition
+      if (price && totalDays && remainingDays) {
+        var refundAmount = (price / totalDays) * remainingDays * serviceFee;
+        document.getElementById('result').innerText = 'Refund Amount: ₱' + refundAmount.toFixed(2);
+        var dailyRate = price / totalDays;
+        document.getElementById('dailyRate').innerText = 'Daily Rate: ₱' + dailyRate.toFixed(2);
       } else {
-        document.getElementById('navbar').classList.add('fourth-color');
+        document.getElementById('result').innerText = 'Please fill in all fields.';
+        document.getElementById('dailyRate').innerText = '';
       }
     }
 
-    // Call setColorScheme function to set initial color scheme
-    setColorScheme();
-
-    // Set the iframe src with the decoded email parameter
-    var iframe = document.getElementById('myIframe');
-    iframe.src = "https://script.google.com/macros/s/AKfycbwSVu-uFgo-glm1I5aLXcMY18zsIWEuslqUOvr6kA-UNP7oQkuaOQdPYIJGjnycOIKwfA/exec?email=" + email;
+    function switchToResellerWage() {
+      window.location.href = 'wagecal.html'; // Replace with your reseller wage calculator page
+    }
   </script>
-
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
